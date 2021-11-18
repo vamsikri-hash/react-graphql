@@ -1,34 +1,46 @@
 import { gql, useQuery } from "@apollo/client";
+import { useState } from "react";
 import "./App.css";
+import { DogPhoto } from "./DogPhoto";
+//import { DogPhoto } from "./DogPhoto";
 
-const EXCHANGE_RATES = gql`
-
-query GET_RATES {
-  rates(currency: "USD") {
-    name
-    currency
-    rate
+const GET_DOGS = gql`
+  query GetDogs {
+    dogs {
+      id
+      breed
+    }
   }
-}
-
 `;
 
-
 export const App = () => {
+  const [selectedDog, setSelectedDog] = useState("");
+  const { data, loading, error } = useQuery(GET_DOGS);
 
+  if (loading) return "Loading...";
+  if (error) return `Error! ${error.message}`;
 
-  const { loading, error, data } = useQuery(EXCHANGE_RATES);
+  console.info(selectedDog);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
-
-  return (data.rates.map(({ currency, rate }) => (
-    <div key={currency}>
-      <p>
-        {currency}: {rate}
-      </p>
+  return (
+    <div style={{ marginLeft: "40%" }}>
+      <h3>Dog Selection</h3>
+      <select
+        name="dog"
+        onChange={(e) => setSelectedDog(e.target.value)}
+        value={selectedDog}
+      >
+        {data.dogs.map((dog) => (
+          <option key={dog.id} value={dog.breed}>
+            {dog.breed}
+          </option>
+        ))}
+      </select>
+      <div style={{marginTop: "50px"}}>
+        <DogPhoto breed={selectedDog}/>
+      </div>
     </div>
-  )));
+  );
 };
 
 export default App;
