@@ -1,34 +1,15 @@
-import { gql, useQuery } from "@apollo/client";
+import { AddTodo } from "./AddTodo";
 import "./App.css";
 
-const EXCHANGE_RATES = gql`
-
-query GET_RATES {
-  rates(currency: "USD") {
-    name
-    currency
-    rate
-  }
-}
-
-`;
 
 
 export const App = () => {
 
-
-  const { loading, error, data } = useQuery(EXCHANGE_RATES);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
-
-  return (data.rates.map(({ currency, rate }) => (
-    <div key={currency}>
-      <p>
-        {currency}: {rate}
-      </p>
-    </div>
-  )));
+  return (
+    <>
+      <h3>Todo Form</h3>
+      <AddTodo/>
+    </>);
 };
 
 export default App;
